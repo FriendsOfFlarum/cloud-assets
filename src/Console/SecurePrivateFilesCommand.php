@@ -65,6 +65,28 @@ class SecurePrivateFilesCommand extends Command
 
     public function handle(): int
     {
+        // One bucket holding both trees. `storage/` is already where private
+        // files belong and there is no second bucket to move them to, so every
+        // key under that prefix is correctly placed — the destination would be
+        // the source, and moving a file onto itself before deleting the source
+        // would destroy it.
+        //
+        // What keeps those files unreadable here is a bucket policy denying
+        // public access to the prefix. This command cannot see that policy and
+        // must not imply it has checked one.
+        if ($this->config->usesOneBucket()) {
+            $this->info(sprintf(
+                'Configured with one bucket (`%s`), so private files already live under `%s` where they belong. Nothing to move.',
+                $this->config->bucket,
+                CloudDriver::PRIVATE_PREFIX
+            ));
+            $this->line('');
+            $this->comment('Their protection comes from the bucket policy denying public reads of that');
+            $this->comment('prefix — this command cannot verify it. Check the policy separately.');
+
+            return 0;
+        }
+
         $dryRun = ! $this->option('force');
 
         // Read the public bucket directly rather than through a disk. The
