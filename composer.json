@@ -27,7 +27,7 @@
         }
     ],
     "require": {
-        "flarum/core": "2.x-dev",
+        "flarum/core": "^2.0.0",
         "league/flysystem-aws-s3-v3": "^3.0"
     },
     "autoload": {
@@ -41,8 +41,8 @@
         }
     },
     "require-dev": {
-        "flarum/phpstan": "2.x-dev",
-        "flarum/testing": "2.x-dev"
+        "flarum/phpstan": "^2.0.0",
+        "flarum/testing": "^2.0.0"
     },
     "extra": {
         "branch-alias": {
